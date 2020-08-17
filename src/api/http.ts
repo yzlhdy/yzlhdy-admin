@@ -14,14 +14,7 @@ type requestFn = (url: string, params?: Object, data?: Object | null) => AxiosPr
 
 class Http {
 
-  /*
-  * 说明一下为什么要用 AxiosInstance 而不用 axios.create()这种方式
-  * 可能将来咱么这个项目要扩展，需要请求另一个网站的数据
-  * 比如 需要请求 baidu.com，又需要请求tencent.com
-  * 那么就有一个问题，axios.create()创建的对象，baseUrl有且只有一个，也就是说只可以指定一个
-  * 如果制定了百度的  就不能在指定腾讯的 指定了也不起作用
-  * AxiosInstance 他就是为了解决这个问题
-  * */
+
 
   // 请求对象
   private axios: AxiosStatic | any = AxiosInstance;
@@ -45,9 +38,7 @@ class Http {
     this.useInterceptRequest();
   }
 
-  // 响应拦截器
-  // 稍微复杂一点 因为涉及到状态码相关的一套东西,还有 请求出错,如果进行错误判断,
-  // 如果你的后端和你约定的状态码 和我的不一样,你拿过去可以自行修改就ok
+
   useInterceptResponse() {
     this.axios.interceptors.response.use(
       (res: any) => {
@@ -121,14 +112,9 @@ class Http {
     this.axios.interceptors.request.use(
 
       async (config: AxiosRequestConfig) => {
-        // 这里传进来的config  是我们发出请求的时候，默认的config配置，包括url，method， data...
-        // 因为后面需要往服务器上发请求的时候,携带一个token 但是这个token 刚开始是不知道的,需要知道过后,在配置
+
         const newConfig = config;
-        // 获取token
-        // 咱们登陆过后,服务器会下发一个token 过来,咱们就存在本地,用localStorage存起来
-        // 然后咱们封装一个获取登陆状态的工具函数,在里面去处理 token保存和token过期时刷新token的逻辑
-        // 大概是这样子 const token = loginUtils.getToken();
-        // 也就是说,逻辑不应该放在这里处理.
+
         const token = await 'abs.abs.abs';
         if (token) newConfig.headers.authtoken = token;
 
@@ -147,14 +133,7 @@ class Http {
 
 
 
-  // 封装一个底层的公用方法
-  /*
-  * type: 请求的方式 GET POST 。。。
-  * url: 请求的地址
-  * options: 请求的参数
-  * isComplex： 是否平铺 参数 一般用于get但不是绝对
-  * isComplex---> eg: {a:1,b:2} isComplex为true 时会转换为 a=1&b=2这种格式
-  * */
+
   private fetchData(type: string, url: string, options?: Object, isComplex?: boolean) {
     if (isComplex) {
       return this.axios[type](url, null, options);

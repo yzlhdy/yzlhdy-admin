@@ -55,7 +55,8 @@ const LeftNav: React.FC = () => {
         selectedKeys={[path]}
         defaultOpenKeys={[openKey]}
         mode="inline"
-        theme="dark"
+        theme="light"
+        style={{ height: '100vh' }}
       >
         {
           getMenuNodes(menuList)
