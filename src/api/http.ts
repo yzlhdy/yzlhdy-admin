@@ -50,8 +50,8 @@ class Http {
         }
 
         // token 过期了,
-        if (res.data.errorCode === '102022001') {
-          message.error('身份信息已过期,请重新登录');
+        if (res.data.errorCode === '401') {
+          message.error('未授权');
           // 还需要跳转到 login页面 这个逻辑,但不在这里处理,
         }
         // 然后就是别的情况
@@ -115,7 +115,7 @@ class Http {
 
         const newConfig = config;
 
-        const token = await 'abs.abs.abs';
+        const token = localStorage.getItem('token')
         if (token) newConfig.headers.authtoken = token;
 
         // 如果还有别的需求要处理,就在这里面去写就ok了

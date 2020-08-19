@@ -36,7 +36,6 @@ const LeftNav: React.FC = () => {
             key={item.key}
             icon={<AppstoreOutlined />}
             title={
-
               item.title}
           >
             {getMenuNodes(item.children)}

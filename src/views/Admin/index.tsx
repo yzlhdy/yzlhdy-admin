@@ -14,7 +14,7 @@ import NewArticles from '../NewArticles';
 
 
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Sider } = Layout;
 const Admin: React.FC = () => {
   let token: any = LocalStore.get('token')
   let username: any = LocalStore.get('username')

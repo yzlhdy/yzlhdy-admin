@@ -1,21 +1,40 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import 'braft-editor/dist/index.css'
-import { Form, Input, Button, DatePicker, Space, Select } from 'antd';
+import { Form, Input, Button, DatePicker, Space, Select, message } from 'antd';
 import BraftEditor from 'braft-editor'
 import 'braft-editor/dist/index.css'
 import { Container, MarkUp } from './styles';
+import { createArcion, CrateArcion } from '../../api/user'
 const { Option, OptGroup } = Select;
 
 const Edit: React.FC = () => {
   const [editorData, setEditorData] = useState(
     BraftEditor.createEditorState(null)
   )
-  const handleChange = useCallback(value => {
-    setEditorData(value)
-  }, [])
-  const onFinish = (values: any) => {
-    console.log(values);
 
+  const [edittor, setEdittor] = useState<string>('')
+  const [types, settypes] = useState<number>(0)
+  const handleChange = (editorState: any) => {
+    setEditorData({ editorState })
+
+    const htmlContent = editorState.toHTML()
+    // const result = await saveEditorContent(htmlContent)
+    setEdittor(htmlContent)
+  }
+  const onFinish = (values: any) => {
+    let request: CrateArcion = {
+      name: values.title,
+      description: edittor,
+      columnId: types,
+      username: 'admin'
+    }
+
+    createArcion(request).then(res => {
+      if (res.data.code === 200) {
+        message.success('创建成功')
+      }
+
+    })
   }
   /**
    * 获取时间
@@ -30,11 +49,16 @@ const Edit: React.FC = () => {
   const onOk = function (value: any) {
     console.log('onOk: ', value);
   }
+  const submitContent = async () => {
+    // Pressing ctrl + s when the editor has focus will execute this method
+    // Before the editor content is submitted to the server, you can directly call editorState.toHTML () to get the HTML content
+
+  }
   /**
    * 获取类型
    */
-  const handleType = function (value: any) {
-    console.log(`selected ${value}`);
+  const handleType = function (value: number) {
+    settypes(value)
   }
   return (
     <Container>
@@ -54,10 +78,10 @@ const Edit: React.FC = () => {
           </Space>
         </Form.Item>
         <Form.Item label="文章类型">
-          <Select defaultValue="lucy" style={{ width: 200 }} onChange={handleType}>
+          <Select defaultValue={1} style={{ width: 200 }} onChange={handleType}>
             <OptGroup label="类型">
-              <Option value="jack">Vue</Option>
-              <Option value="lucy">React</Option>
+              <Option value={1}>Vue</Option>
+              <Option value={2}>React</Option>
             </OptGroup>
           </Select>
         </Form.Item>
@@ -66,9 +90,9 @@ const Edit: React.FC = () => {
         </Form.Item>
       </Form>
       <MarkUp>
-        <BraftEditor value={editorData} onChange={handleChange} />
+        <BraftEditor value={editorData} onChange={handleChange} onSave={submitContent} />
       </MarkUp>
-    </Container>
+    </Container >
   );
 }
 
